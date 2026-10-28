@@ -131,3 +131,32 @@ npm run dev             # http://localhost:8080
 | `.env.production` | URL + chave `anon` do Supabase (lidas no build) |
 | `.env.example` | modelo para rodar localmente |
 | `supabase/setup-completo.sql` | schema + dados + admin em um único script |
+
+---
+
+## 🧯 Erro `sh: 1: vite: not found` (já corrigido no repositório)
+
+**Causa:** a Netlify roda a instalação com `NODE_ENV=production`, e nesse modo o npm
+**não instala as devDependencies** — onde ficam o Vite, o Tailwind e o TypeScript. Sem o
+Vite, o build morre antes de gerar a pasta `dist`.
+
+**Correção aplicada no `netlify.toml`** (dupla proteção):
+
+```toml
+[build]
+  command = "npm install --include=dev --no-audit --no-fund && npm run build"
+  publish = "dist"
+  environment = { NODE_VERSION = "22", NPM_FLAGS = "--include=dev --no-audit --no-fund" }
+```
+
+Se o seu site foi criado antes desta correção, force um novo build:
+**Deploys → Trigger deploy → Clear cache and deploy site**.
+
+> Alternativa pelo painel, sem depender do arquivo:
+> **Site configuration → Environment variables** → `NPM_FLAGS` = `--include=dev`.
+
+### Outro erro comum: repositório vazio
+
+Se o log mostrar `Deploy directory "dist" does not exist` e o repositório no GitHub
+aparecer **sem nenhum arquivo**, a Netlify está conectada a um repositório vazio —
+escolha o repositório correto em **Site configuration → Build & deploy → Repository**.

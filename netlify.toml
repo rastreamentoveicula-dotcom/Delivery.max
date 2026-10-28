@@ -7,22 +7,30 @@
 # =====================================================
 
 [build]
-  # Comando que gera a pasta de produção
-  command = "npm run build"
+  # Instala as dependências (incluindo as de desenvolvimento) e gera a pasta de
+  # produção. O `npm install --include=dev` antes do build é uma proteção extra:
+  # garante o Vite disponível mesmo que a etapa de instalação da Netlify rode em
+  # modo produção (NODE_ENV=production), que ignora devDependencies.
+  command = "npm install --include=dev --no-audit --no-fund && npm run build"
   # Pasta publicada (saída do Vite)
   publish = "dist"
   # Variáveis de build disponíveis no ambiente da Netlify
-  environment = { NODE_VERSION = "22", NPM_FLAGS = "--no-audit --no-fund" }
+  #
+  # IMPORTANTE (--include=dev):
+  # A Netlify define NODE_ENV=production durante a instalação, e nesse modo o npm
+  # ignora as devDependencies — onde ficam o Vite, o Tailwind e o TypeScript.
+  # Sem esta flag o build quebra com "sh: 1: vite: not found".
+  environment = { NODE_VERSION = "22", NPM_FLAGS = "--include=dev --no-audit --no-fund" }
 
 # Deploys de preview (pull requests / branches) usam o mesmo build
 [context.deploy-preview]
-  command = "npm run build"
+  command = "npm install --include=dev --no-audit --no-fund && npm run build"
 
 [context.branch-deploy]
-  command = "npm run build"
+  command = "npm install --include=dev --no-audit --no-fund && npm run build"
 
 [context.production]
-  command = "npm run build"
+  command = "npm install --include=dev --no-audit --no-fund && npm run build"
 
 # -----------------------------------------------------
 # Redirecionamentos: SPA (React Router)
