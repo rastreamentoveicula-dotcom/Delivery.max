@@ -1,0 +1,3 @@
+# Fallback de SPA para o React Router (mantido junto do netlify.toml,
+# funciona também se o arquivo de configuração não for lido)
+/*    /index.html   200

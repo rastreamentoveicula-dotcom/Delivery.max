@@ -1,0 +1,65 @@
+# =====================================================
+# Delivery Max - Configuração de deploy na Netlify
+# =====================================================
+
+[build]
+  # Comando que gera a pasta de produção
+  command = "npm run build"
+  # Pasta publicada (saída do Vite)
+  publish = "dist"
+  # Variáveis de build disponíveis no ambiente da Netlify
+  environment = { NODE_VERSION = "22", NPM_FLAGS = "--no-audit --no-fund" }
+
+# Deploys de preview (pull requests / branches) usam o mesmo build
+[context.deploy-preview]
+  command = "npm run build"
+
+[context.branch-deploy]
+  command = "npm run build"
+
+[context.production]
+  command = "npm run build"
+
+# -----------------------------------------------------
+# Redirecionamentos: SPA (React Router)
+# Qualquer rota desconhecida cai no index.html, então
+# /dashboard, /login, /track-order/123 etc funcionam
+# mesmo sendo acessadas diretamente.
+# -----------------------------------------------------
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# -----------------------------------------------------
+# Cabeçalhos de segurança e cache
+# -----------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(self), microphone=(), camera=()"
+
+# Assets com hash no nome podem ser cacheados para sempre
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# HTML sempre revalidado para pegar novos deploys imediatamente
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# -----------------------------------------------------
+# Template do botão "Deploy to Netlify"
+# Ao clicar no botão, a Netlify pede essas duas variáveis
+# antes de criar o site. Preencha com os dados do SEU projeto
+# Supabase (Project Settings > API).
+# -----------------------------------------------------
+[template.environment]
+  VITE_SUPABASE_URL = "https://seu-projeto.supabase.co"
+  VITE_SUPABASE_PUBLISHABLE_KEY = "sua-chave-anon-publica"
