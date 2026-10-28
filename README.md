@@ -266,8 +266,11 @@ npm run preview
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/rastreamentoveicula-dotcom/Delivery.max)
 
-O projeto já está pronto para a Netlify: o `netlify.toml` define build, pasta publicada,
-redirects de SPA e cabeçalhos de cache/segurança.
+O banco já está criado e o repositório já está configurado — o deploy é um clique:
+
+1. Abra o link acima → **Connect to GitHub** → escolha `Delivery.max`
+2. **Deploy site** (não precisa preencher variáveis)
+3. Pronto: `https://seu-site.netlify.app` (cada `git push` na `main` atualiza sozinho)
 
 | Configuração | Valor |
 |---|---|
@@ -275,34 +278,12 @@ redirects de SPA e cabeçalhos de cache/segurança.
 | Publish directory | `dist` |
 | Node | 22 |
 | Redirect SPA | `/*` → `/index.html` (200) |
+| Banco | Supabase `DeliveryMax` (sa-east-1) — configurado em `.env.production` |
 
-### Antes de publicar: banco de dados
+**Primeiro acesso ao painel:** `/login` com `admin@deliverymax.com` / `Delivery@2026`
+(troque a senha depois).
 
-1. Crie um projeto no [Supabase](https://supabase.com/dashboard) (região `sa-east-1`)
-2. No **SQL Editor**, execute o arquivo [`supabase/setup-completo.sql`](./supabase/setup-completo.sql) —
-   ele cria schema, dados de exemplo e o admin inicial (`admin@deliverymax.com` / `Delivery@2026`)
-3. Copie **Project URL** e a chave **anon public** em *Project Settings → API*
-
-### Passo a passo (Netlify)
-
-1. **Add new site → Import an existing project → GitHub → `Delivery.max`**
-2. Branch: `main` · Build: `npm run build` · Publish: `dist` (já detectado pelo `netlify.toml`)
-3. Em **Environment variables**, cadastre `VITE_SUPABASE_URL` e
-   `VITE_SUPABASE_PUBLISHABLE_KEY` (opcional — há fallback no código)
-4. **Deploy site** (a Netlify pede `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`)
-5. **Domain management** para usar seu domínio próprio com HTTPS
-
-### Deploy pela CLI
-
-```bash
-npm install -g netlify-cli
-netlify login
-npm run build
-netlify deploy --prod --dir=dist
-```
-
-📖 Guia detalhado, checklist pós-deploy e solução de problemas: **[DEPLOY.md](./DEPLOY.md)**
-
+📖 Guia detalhado, domínio próprio e solução de problemas: **[DEPLOY.md](./DEPLOY.md)**
 
 ---
 
