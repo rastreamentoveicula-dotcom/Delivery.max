@@ -276,13 +276,21 @@ redirects de SPA e cabeçalhos de cache/segurança.
 | Node | 22 |
 | Redirect SPA | `/*` → `/index.html` (200) |
 
+### Antes de publicar: banco de dados
+
+1. Crie um projeto no [Supabase](https://supabase.com/dashboard) (região `sa-east-1`)
+2. No **SQL Editor**, execute o arquivo [`supabase/setup-completo.sql`](./supabase/setup-completo.sql) —
+   ele cria schema, dados de exemplo e o admin inicial (`admin@deliverymax.com` / `Delivery@2026`)
+3. Copie **Project URL** e a chave **anon public** em *Project Settings → API*
+
 ### Passo a passo (Netlify)
 
 1. **Add new site → Import an existing project → GitHub → `Delivery.max`**
 2. Branch: `main` · Build: `npm run build` · Publish: `dist` (já detectado pelo `netlify.toml`)
 3. Em **Environment variables**, cadastre `VITE_SUPABASE_URL` e
    `VITE_SUPABASE_PUBLISHABLE_KEY` (opcional — há fallback no código)
-4. **Deploy site** e, depois, **Domain management** para usar seu domínio com HTTPS
+4. **Deploy site** (a Netlify pede `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`)
+5. **Domain management** para usar seu domínio próprio com HTTPS
 
 ### Deploy pela CLI
 

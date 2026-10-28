@@ -53,3 +53,13 @@
   for = "/index.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# -----------------------------------------------------
+# Template do botão "Deploy to Netlify"
+# Ao clicar no botão, a Netlify pede essas duas variáveis
+# antes de criar o site. Preencha com os dados do SEU projeto
+# Supabase (Project Settings > API).
+# -----------------------------------------------------
+[template.environment]
+  VITE_SUPABASE_URL = "https://seu-projeto.supabase.co"
+  VITE_SUPABASE_PUBLISHABLE_KEY = "sua-chave-anon-publica"

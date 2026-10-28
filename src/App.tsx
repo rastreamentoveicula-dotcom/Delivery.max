@@ -19,6 +19,7 @@ import PDV from "./pages/PDV";
 import Reports from "./pages/Reports";
 import Customization from "./pages/Customization";
 import TrackOrder from "./pages/TrackOrder";
+import { SupabaseSetupBanner } from "./components/system/SupabaseSetupBanner";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ function App() {
           position="bottom-right" 
           duration={4000}
         />
+        <SupabaseSetupBanner />
         <BrowserRouter>
           <AuthProvider>
             <Routes>
