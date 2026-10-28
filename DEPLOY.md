@@ -1,153 +1,133 @@
 # 🚀 Deploy do Delivery Max na Netlify
 
-O projeto é um app **Vite + React + TypeScript** (frontend estático) com banco de dados
-**Supabase**. Tudo que a Netlify precisa já está no repositório: `netlify.toml` +
-`public/_redirects`.
+**Status: o banco de dados já está criado e populado. Falta apenas 1 clique na Netlify.**
 
-| Item | Valor |
+| Infraestrutura | Situação |
 |---|---|
-| Comando de build | `npm run build` |
-| Pasta publicada | `dist` |
-| Versão do Node | 22 |
-| Redirect SPA | `/*` → `/index.html` (200) |
-
-O caminho completo tem **2 etapas**: (1) criar o banco no Supabase e (2) publicar na Netlify.
-A ordem importa, porque a Netlify vai pedir as credenciais do Supabase durante o deploy.
+| Banco de dados (Supabase) | ✅ **DeliveryMax** criado em São Paulo · schema + 14 produtos + admin |
+| Código (GitHub) | ✅ `rastreamentoveicula-dotcom/Delivery.max` na `main` |
+| Site (Netlify) | ⏳ pronto para o deploy de 1 clique |
 
 ---
 
-# Etapa 1 — Banco de dados (Supabase)
+## 1. Deploy do site (único passo manual)
 
-> ⚠️ **Importante:** o projeto Supabase que estava fixo no código
-> (`hnlxieskgpblbvftygye.supabase.co`) **não existe mais** — o domínio não resolve.
-> Sem um projeto novo, o site sobe mas login, produtos e pedidos não funcionam.
->
-> A criação automática foi bloqueada: **sua conta atingiu o limite de projetos do plano
-> free**. Nada foi apagado nem alterado no projeto DivulgaAi (sistema separado, intocado).
-> Para criar o novo projeto você precisa liberar espaço no plano free **ou** fazer upgrade.
+Abra este link e siga os 3 cliques:
 
-### 1.1 Liberar espaço para o novo projeto
+### 👉 https://app.netlify.com/start/deploy?repository=https://github.com/rastreamentoveicula-dotcom/Delivery.max
 
-Escolha uma das opções (todas são feitas por você, no painel do Supabase):
+1. **Connect to GitHub** → autorize e escolha o repositório `Delivery.max`
+2. **Deploy site** (não precisa preencher nada: o build, a pasta `dist`, as rotas e as
+   credenciais do banco já estão configurados no repositório)
+3. Aguarde ~1 minuto → seu sistema está em `https://nome-aleatorio.netlify.app`
 
-- **Plano Pro** — https://supabase.com/dashboard/org/_/billing (permite mais projetos)
-- **Pausar o projeto DivulgaAi** (o banco é mantido, só fica offline enquanto pausado) e
-  criar o DeliveryMax em seguida: Project Settings → General → *Pause project*
-- **Criar o DeliveryMax em outra conta/organização** do Supabase
+> Não é pedido nenhum cartão de crédito. O plano gratuito da Netlify é suficiente.
 
-### 1.2 Criar o projeto
+### Deixar o endereço bonito
+**Site configuration → Site details → Change site name** → por exemplo
+`delivery-max` → o endereço vira `https://delivery-max.netlify.app`.
 
-1. https://supabase.com/dashboard → **New project**
-2. Nome: `DeliveryMax` · Região: **South America (São Paulo) – sa-east-1**
-3. Defina a senha do banco e guarde-a
+### Usar seu próprio domínio (opcional)
+**Domain management → Add a domain** → informe o domínio → a Netlify mostra os dados de
+DNS para colocar no registro.br/GoDaddy/etc. O **HTTPS** é emitido sozinho.
 
-### 1.3 Criar as tabelas (1 arquivo só)
+---
 
-1. No projeto novo, abra **SQL Editor → New query**
-2. Cole **todo** o conteúdo de [`supabase/setup-completo.sql`](./supabase/setup-completo.sql)
-3. Clique em **Run**
+## 2. Acessar o sistema
 
-Esse arquivo único cria o schema inteiro, os dados de exemplo (categorias, produtos,
-restaurante) e o usuário administrador inicial:
+| O que | Onde |
+|---|---|
+| Loja (cliente) | `https://seu-site.netlify.app/` |
+| Painel administrativo | `https://seu-site.netlify.app/login` |
 
 | Login inicial | |
 |---|---|
-| E-mail | `admin@deliverymax.com` |
-| Senha | `Delivery@2026` |
+| **E-mail** | `admin@deliverymax.com` |
+| **Senha** | `Delivery@2026` |
 
-➡️ **Troque a senha depois do primeiro acesso.** A autenticação atual guarda a senha em
-texto puro na tabela `public.users` (comportamento do sistema original); o recomendado é
-migrar para o Supabase Auth futuramente.
-
-### 1.4 Copiar as credenciais
-
-Em **Project Settings → API** copie:
-
-- **Project URL** → `https://xxxxxxxxxxxx.supabase.co`
-- **anon public** (em *Project API keys*) → `eyJhbGciOi...`
-
-> Use **somente** a chave `anon public`. A `service_role` nunca deve ir para o frontend.
+> ⚠️ **Troque a senha** depois do primeiro acesso (menu **Usuários** no painel).
+> A autenticação do sistema original guarda a senha em texto puro na tabela
+> `public.users` — funciona, mas o ideal no futuro é migrar para o Supabase Auth.
 
 ---
 
-# Etapa 2 — Publicar na Netlify
+## 3. O banco de dados (já feito)
 
-## Opção A — Deploy pelo GitHub (recomendado, automático a cada push)
+Projeto **DeliveryMax** no Supabase · ref `hfjwbevdbuwjygkjngnf` · região `sa-east-1`
 
-1. Abra o link do botão:
-   **https://app.netlify.com/start/deploy?repository=https://github.com/rastreamentoveicula-dotcom/Delivery.max**
-2. Autorize o acesso ao GitHub e escolha o repositório **Delivery.max**
-3. A Netlify pede as duas variáveis (configuradas em `netlify.toml`):
-   - `VITE_SUPABASE_URL` → a Project URL copiada no passo 1.4
-   - `VITE_SUPABASE_PUBLISHABLE_KEY` → a chave `anon public`
-4. Confirme o build (já detectado): `npm run build` → `dist`
-5. **Deploy** — em ~1 minuto o sistema está em `https://seu-site.netlify.app`
+- Painel: https://supabase.com/dashboard/project/hfjwbevdbuwjygkjngnf
+- URL da API: `https://hfjwbevdbuwjygkjngnf.supabase.co`
 
-Cada `git push` na branch `main` gera um novo deploy automaticamente.
+O que já está lá:
 
-### Depois, para trocar/ajustar as variáveis
-**Site configuration → Environment variables** → edite e depois
-**Deploys → Trigger deploy → Clear cache and deploy site**.
+| Item | Quantidade |
+|---|---|
+| Tabelas (pedidos, produtos, entregas, usuários…) | 17 |
+| Categorias | 4 |
+| Produtos de exemplo | 14 |
+| Adicionais | 8 |
+| Formas de pagamento | 5 |
+| Regiões de entrega | 5 |
+| Horários de funcionamento | 7 dias |
+| Restaurante de exemplo ("Burger House") | 1 |
+| Usuário admin | 1 |
 
-### Domínio próprio
-**Domain management → Add a domain**, aponte o DNS (`CNAME` para `seu-site.netlify.app`
-ou use os nameservers da Netlify) e ative o **HTTPS** (Let's Encrypt, automático e grátis).
+Para recriar do zero em outro projeto: rode [`supabase/setup-completo.sql`](./supabase/setup-completo.sql)
+no **SQL Editor** do Supabase (cria schema + dados + admin em um arquivo).
 
-## Opção B — Deploy pela CLI
+### Credenciais usadas pelo app
 
-```bash
-npm install -g netlify-cli
-netlify login
-netlify init                      # vincula/cria o site
-netlify env:set VITE_SUPABASE_URL "https://xxx.supabase.co"
-netlify env:set VITE_SUPABASE_PUBLISHABLE_KEY "eyJhbGciOi..."
-npm ci && npm run build
-netlify deploy --prod --dir=dist
+Ficam em [`.env.production`](./.env.production) e são lidas automaticamente no build:
+
+```env
+VITE_SUPABASE_URL=https://hfjwbevdbuwjygkjngnf.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOi...   # chave anon public
 ```
 
+> A chave `anon` é **pública** por definição (vai dentro do JavaScript entregue ao
+> navegador de qualquer forma). A chave `service_role` **nunca** deve ir para o frontend.
+>
+> Para apontar para outro projeto Supabase: edite o `.env.production` e faça commit,
+> ou (sem mexer no código) cadastre as duas variáveis em
+> **Netlify → Site configuration → Environment variables** e refaça o deploy com
+> **Deploys → Trigger deploy → Clear cache and deploy site**.
+
 ---
 
-## 🔁 Rodando localmente
+## 4. Atualizações futuras do site
+
+Cada `git push` na branch `main` dispara um deploy automático. Nada mais precisa ser feito.
+
+---
+
+## 5. Rodando na sua máquina (opcional)
 
 ```bash
 npm install
-cp .env.example .env    # preencha com URL e chave anon
+cp .env.example .env    # preencha com a URL e a chave anon
 npm run dev             # http://localhost:8080
 ```
 
-Sem o `.env`, o app **abre normalmente** mas mostra uma faixa amarela avisando que o
-banco não está configurado (as consultas falham).
-
 ---
 
-## ✅ Checklist pós-deploy
+## 6. Problemas comuns
 
-- [ ] `/` abre o catálogo do cliente, sem faixa amarela de configuração
-- [ ] `/login` entra com `admin@deliverymax.com` e a senha definida
-- [ ] `/dashboard` carrega métricas após o login
-- [ ] Atualizar (F5) em `/dashboard` continua funcionando → redirect SPA OK
-- [ ] Senha do admin trocada
-- [ ] Domínio próprio com HTTPS
-
-## 🧯 Problemas comuns
-
-| Sintoma | Causa / solução |
+| Sintoma | Solução |
 |---|---|
-| Faixa amarela "Banco de dados não configurado" | `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` ausentes na Netlify → cadastre e refaça o deploy **limpando o cache**. |
-| Erros de rede para `*.supabase.co` no console | URL/chave incorretas ou projeto Supabase pausado (o free tier pausa após 7 dias sem uso). |
-| Listagens vazias ou erro 401/403 | `setup-completo.sql` não foi executado, ou as políticas de RLS não foram criadas. |
-| Página branca ao abrir `/dashboard` direto | `netlify.toml` fora da raiz da branch publicada; `public/_redirects` é o fallback. |
+| Faixa amarela "Banco de dados não configurado" | Faltou o `.env.production`. Cadastre as variáveis no painel da Netlify e refaça o deploy **limpando o cache**. |
+| Login diz "e-mail ou senha incorretos" | Confira `admin@deliverymax.com` / `Delivery@2026`. Para recriar: rode a PARTE 3 do `setup-completo.sql`. |
+| Página branca ao abrir `/dashboard` direto | O `netlify.toml` precisa estar na raiz da branch publicada (`main`). O `public/_redirects` é o fallback. |
+| Site abre mas listas vazias / erro 401 | Projeto Supabase pausado (o free tier pausa após 7 dias sem uso) → painel do Supabase → **Restore project**. |
 | Build falhou na Netlify | Veja **Deploys → Deploy log**. Reproduza local: `rm -rf node_modules dist && npm ci && npm run build`. |
-| Login diz "e-mail ou senha incorretos" | Usuário não existe: rode a PARTE 3 do `setup-completo.sql` ou use a tela **Usuários**. |
 
 ---
 
-## 📌 Resumo do que já está pronto no repositório
+## 📌 Arquivos de configuração no repositório
 
-- `netlify.toml` — build, pasta `dist`, SPA redirects, headers de cache/segurança e
-  template do botão de deploy
-- `public/_redirects` — fallback do React Router
-- Credenciais via `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` (`.env.example`)
-- `supabase/setup-completo.sql` — schema + dados + admin em um único script
-- `vite.config.ts` — build otimizado com code splitting
-- `.gitignore` — protegendo `.env`
+| Arquivo | Função |
+|---|---|
+| `netlify.toml` | build, pasta `dist`, Node 22, redirect SPA, headers de cache/segurança |
+| `public/_redirects` | fallback do React Router |
+| `.env.production` | URL + chave `anon` do Supabase (lidas no build) |
+| `.env.example` | modelo para rodar localmente |
+| `supabase/setup-completo.sql` | schema + dados + admin em um único script |
