@@ -111,7 +111,20 @@ supabase db reset
 supabase db push
 ```
 
-3. Configure as variáveis de ambiente no arquivo `src/integrations/supabase/client.ts`
+3. Configure as variáveis de ambiente. Copie o exemplo e preencha com os dados do seu projeto
+   (Supabase Dashboard > Project Settings > API):
+
+```bash
+cp .env.example .env
+```
+
+```env
+VITE_SUPABASE_URL=https://seu-projeto.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sua-chave-anon-publica
+```
+
+> Sem o `.env` o app usa o projeto Supabase já embutido em
+> `src/integrations/supabase/client.ts` como fallback.
 
 ### 4. Execute o projeto
 
@@ -251,17 +264,36 @@ npm run preview
 
 ## 🚀 Deploy
 
-### Vercel (Recomendado)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/rastreamentoveicula-dotcom/Delivery.max)
 
-1. Conecte o repositório ao Vercel
-2. Configure as variáveis de ambiente
-3. Deploy automático a cada push
+O projeto já está pronto para a Netlify: o `netlify.toml` define build, pasta publicada,
+redirects de SPA e cabeçalhos de cache/segurança.
 
-### Netlify
+| Configuração | Valor |
+|---|---|
+| Build command | `npm run build` |
+| Publish directory | `dist` |
+| Node | 22 |
+| Redirect SPA | `/*` → `/index.html` (200) |
 
-1. Build command: `npm run build`
-2. Publish directory: `dist`
-3. Configure redirects para SPA
+### Passo a passo (Netlify)
+
+1. **Add new site → Import an existing project → GitHub → `Delivery.max`**
+2. Branch: `main` · Build: `npm run build` · Publish: `dist` (já detectado pelo `netlify.toml`)
+3. Em **Environment variables**, cadastre `VITE_SUPABASE_URL` e
+   `VITE_SUPABASE_PUBLISHABLE_KEY` (opcional — há fallback no código)
+4. **Deploy site** e, depois, **Domain management** para usar seu domínio com HTTPS
+
+### Deploy pela CLI
+
+```bash
+npm install -g netlify-cli
+netlify login
+npm run build
+netlify deploy --prod --dir=dist
+```
+
+📖 Guia detalhado, checklist pós-deploy e solução de problemas: **[DEPLOY.md](./DEPLOY.md)**
 
 
 ---
